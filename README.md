@@ -9,10 +9,12 @@ On the other hand, if an image has a wide range of bounding box area sizes (incl
 
 However, if a small bounding box is between 2 larger bounding boxes, dropping and cropping it out will cause missing annotations, as shown in the second image below:
 
-Original image:
+*Original image:*
+
 ![](png/original.png)
 
-Drop and crop image:
+*Drop and crop image:*
+
 ![](png/output.png)
 
 The main function in this script `drop_crop_small_bbox()` is here to the rescue! It does not remove any small bounding boxes between any larger ones!
