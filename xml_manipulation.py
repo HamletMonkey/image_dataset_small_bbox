@@ -36,9 +36,65 @@ def get_xml_height(root):
     return height
 
 
-def remove_xml_object(root, leafname):
-    leaf = root.findall(leafname)
-    root.remove(leaf)
+def get_targeted_xml_object(root, wanted_bbox_list):
+    """
+    return list of element tree object if the any bounding box is in the passed in list
+    """
+    target_object = []
+    for object in root.findall("object"):
+        xmin = int(object.find("bndbox/xmin").text)
+        ymin = int(object.find("bndbox/ymin").text)
+        xmax = int(object.find("bndbox/xmax").text)
+        ymax = int(object.find("bndbox/ymax").text)
+        if [xmin, ymin, xmax, ymax] in wanted_bbox_list:
+            target_object.append(object)
+    return target_object
+
+
+def get_xml_class_list(XML_PATH):
+
+    # import library
+    import os
+    from tqdm import tqdm
+    import xml.etree.ElementTree as ET
+    from tools import get_filelist
+
+    xml_files = get_filelist(XML_PATH)
+    class_list = []
+    for item in tqdm(xml_files):
+        tree = ET.parse(os.path.join(XML_PATH, f"{item}.xml"))
+        root = tree.getroot()
+        for object in root.findall("object"):
+            name = object.find("name").text
+            if name not in class_list:
+                class_list.append(name)
+    return class_list
+
+
+def add_xml_object(root, name, bbox_coordinates):
+
+    # import library
+    import xml.etree.ElementTree as ET
+
+    new_object = ET.SubElement(root, "object")
+    new_name = ET.SubElement(new_object, "name")
+    new_name.text = name
+    new_pose = ET.SubElement(new_object, "pose")
+    new_pose.text = "Unspecified"
+    new_trun = ET.SubElement(new_object, "truncated")
+    new_trun.text = "0"
+    new_diff = ET.SubElement(new_object, "difficult")
+    new_diff.text = "0"
+    new_bbox = ET.SubElement(new_object, "bndbox")
+    new_xmin = ET.SubElement(new_bbox, "xmin")
+    new_xmin.text = str(bbox_coordinates[0])
+    new_ymin = ET.SubElement(new_bbox, "ymin")
+    new_ymin.text = str(bbox_coordinates[1])
+    new_xmax = ET.SubElement(new_bbox, "xmax")
+    new_xmax.text = str(bbox_coordinates[2])
+    new_ymax = ET.SubElement(new_bbox, "ymax")
+    new_ymax.text = str(bbox_coordinates[3])
+
     return
 
 

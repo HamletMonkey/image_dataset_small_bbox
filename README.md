@@ -13,11 +13,15 @@ However, if a small bounding box is between 2 larger bounding boxes, dropping an
 
 ![](png/original.png)
 
-*Drop and crop image:*
+*Drop and crop image -- missing annotations:*
 
 ![](png/output.png)
 
-The main function in this script `drop_crop_small_bbox()` is here to the rescue! It does not remove any small bounding boxes between any larger ones!
+*Drop and crop image -- keeping annotations in between:*
+
+![](png/output1.png)
+
+The main function in this script `drop_crop_small_bbox()` does not remove any small bounding boxes between any larger ones!
 
 ## Running of Script
 Run python file in terminal - if the bounding box area is lesser than the area threshold passed in, it will be removed
